@@ -10,8 +10,8 @@ public function fields(Request $request)
     return [
         ID::make()->sortable(),
 
+        Panel::make('it', []),
         Panel::make('en', []),
-        Panel::make('fr', []),
 
         Translatable::make([
             Text::make('title'),
@@ -23,7 +23,7 @@ public function fields(Request $request)
 
 That `Post` Nova resource will be rendered like this.
 
-![screenshot]( https://rslanzi.github.io/nova-translatable/screenshot.png)
+![screenshot](https://github.com/rslanzi/nova-translatable/blob/main/screenshot.png?raw=true)
 
 ## Requirements
 
