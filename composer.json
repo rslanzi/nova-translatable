@@ -1,0 +1,48 @@
+{
+    "name": "rslanzi/nova-translatable",
+    "description": "Making Nova fields translatable and groupable. Based on spatie/nova-translatable.",
+    "keywords": [
+        "laravel",
+        "nova"
+    ],
+    "homepage": "https://github.com/rslanzi/nova-translatable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Riccardo Slanzi",
+            "email": "rslanzi@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2.0|^8.0",
+        "laravel/nova": "^3.0",
+        "spatie/laravel-translatable": "^4.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.4",
+        "orchestra/testbench": "^5.0|^6.0",
+        "phpunit/phpunit": "^8.5|^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rslanzi\\NovaTranslatable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rslanzi\\NovaTranslatable\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
