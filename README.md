@@ -23,7 +23,7 @@ public function fields(Request $request)
 
 That `Post` Nova resource will be rendered like this.
 
-![screenshot](https://github.com/rslanzi/nova-translatable/blob/main/screenshot.png?raw=true)
+![screenshot](https://github.com/rslanzi/nova-translatable/blob/main/docs/screenshot.png?raw=true)
 
 ## Requirements
 
