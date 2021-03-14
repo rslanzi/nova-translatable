@@ -200,7 +200,6 @@
             },
 
             handleKeydown(event) {
-                console.log(this.slugField);
                 Nova.$emit('field-update-' + this.slugField, {
                     value: event.target.value
                 })

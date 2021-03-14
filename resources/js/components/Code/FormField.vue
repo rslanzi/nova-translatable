@@ -100,12 +100,8 @@ export default {
   watch: {
     value(val) {
       try {
-console.log(val)
         this.$emit('change', val)
       } catch (e) {}
-    },
-    instanceValue(val) {
-console.warning(val)
     }
   },
 }
