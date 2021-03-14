@@ -66,6 +66,7 @@ export default {
         this.currentLocale = this.locales[0] || null;
 
         Nova.$on('field-update-' + this.field.name, ({value}) => {
+            console.log('value');
             this.generateSlug(value)
         })
 

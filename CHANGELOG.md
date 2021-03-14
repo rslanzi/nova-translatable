@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactoring
 - Tests
 
+## [0.2.2] - 2021-03-14
+### Changed
+- Extract Sluggable target field in a separated component
+
 ## [0.2.1] - 2021-03-14
 ### Added
 - Code language support.

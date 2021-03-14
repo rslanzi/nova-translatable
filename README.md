@@ -102,7 +102,7 @@ Automatically populate a slug field based on another field. Title in this case.
 ```php
 NovaTranslatable::make('Title')
     ->sluggable('Slug'),
-NovaTranslatable::make('Slug')
+NovaTranslatableSlug::make('Slug')
     ->singleLine()
 ```
 
