@@ -180,6 +180,21 @@ class NovaTranslatable extends Field
     }
 
     /**
+     * Define the language syntax highlighting mode for the field.
+     *
+     * @param  string  $language
+     * @return $this
+     */
+    public function language($language)
+    {
+        if ($this->fieldType == 'code') {
+            return $this->options(['mode' => $language]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Use as JSON field.
      */
     public function json()

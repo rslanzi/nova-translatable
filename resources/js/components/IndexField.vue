@@ -1,5 +1,5 @@
 <template>
-    <span v-html="value"></span>
+    <span>{{ value | striphtml }}</span>
 </template>
 
 <script>

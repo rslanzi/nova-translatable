@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactoring
 - Tests
 
+## [0.2.1] - 2021-03-14
+### Added
+- Code language support.
+
+### Changed
+- Language link style
+- Stripe HTML from index field
+
 ## [0.2.0] - 2021-03-14
 ### Added
 - Code field support.

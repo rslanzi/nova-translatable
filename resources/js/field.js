@@ -1,5 +1,12 @@
 Nova.booting((Vue, router, store) => {
-    Vue.config.devtools = true;
+    // Vue.config.devtools = true;
+
+    Vue.filter('striphtml', function (value) {
+        var div = document.createElement("div");
+        div.innerHTML = value;
+        var text = div.textContent || div.innerText || "";
+        return text;
+    });
 
     Vue.component('index-nova-translatable', require('./components/IndexField'))
     Vue.component('detail-nova-translatable', require('./components/DetailField'))
