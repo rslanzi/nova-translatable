@@ -35,7 +35,7 @@ Install the package in a Laravel Nova project via Composer:
 
 ```bash
 # Install nova-translatable
-composer install rslanzi/nova-translatable
+composer require rslanzi/nova-translatable
 
 # Publish configuration (optional, but useful for setting default locales)
 php artisan vendor:publish --tag="nova-translatable-config"
