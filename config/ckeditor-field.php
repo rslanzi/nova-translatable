@@ -1,4 +1,5 @@
 <?php
+
 return [
     /*
     |--------------------------------------------------------------------------------
@@ -21,8 +22,8 @@ return [
             ['Link', 'Unlink', 'Anchor'],
             '/',
             ['Format', 'FontSize'],
-            ['Maximize', 'ShowBlocks', '-', 'About']
-        ]
+            ['Maximize', 'ShowBlocks', '-', 'About'],
+        ],
     ],
 
     /*

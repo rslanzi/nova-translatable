@@ -10,22 +10,24 @@ class SlugController
 {
     protected $options = [
         'generateUniqueSlugs' => false,
-        'maximumLength' => 255,
-        'slugSeparator' => '-',
-        'slugLanguage' => 'en',
+        'maximumLength'       => 255,
+        'slugSeparator'       => '-',
+        'slugLanguage'        => 'en',
     ];
 
     protected $attribute;
     protected $model;
     protected $slug = '';
-    
+
     protected $updating = false;
     protected $initialValue = '';
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getSlug(Request $request)
     {
@@ -52,7 +54,7 @@ class SlugController
         if ($request->filled('options')) {
             $this->mergeOptions($request->input('options'));
         }
-        
+
         if ($this->options['generateUniqueSlugs'] && !$this->model) {
             throw new \Exception('Slug model undefined! Use slugModel() on the slug field!');
         }
@@ -69,7 +71,7 @@ class SlugController
             return;
         }
 
-        $model = new $modelClass;
+        $model = new $modelClass();
         $this->model = $modelClass;
 
         if (!method_exists($model, 'getSlugOptions')) {
@@ -79,16 +81,16 @@ class SlugController
         if ($modelSlugOptions = $model->getSlugOptions()) {
             $modelOptions = [
                 'generateUniqueSlugs' => $modelSlugOptions->generateUniqueSlugs,
-                'maximumLength' => $modelSlugOptions->maximumLength,
-                'slugSeparator' => $modelSlugOptions->slugSeparator,
-                'slugLanguage' => $modelSlugOptions->slugLanguage,
+                'maximumLength'       => $modelSlugOptions->maximumLength,
+                'slugSeparator'       => $modelSlugOptions->slugSeparator,
+                'slugLanguage'        => $modelSlugOptions->slugLanguage,
             ];
             $this->mergeOptions($modelOptions);
         }
     }
 
     /**
-     * Validate and merge options from array
+     * Validate and merge options from array.
      *
      * @param $options
      */
@@ -100,9 +102,9 @@ class SlugController
 
         $validator = Validator::make($options, [
             'generateUniqueSlugs' => 'boolean',
-            'maximumLength' => 'numeric',
-            'slugSeparator' => 'string',
-            'slugLanguage' => 'string',
+            'maximumLength'       => 'numeric',
+            'slugSeparator'       => 'string',
+            'slugLanguage'        => 'string',
         ]);
 
         $options = $validator->validate();
@@ -114,6 +116,7 @@ class SlugController
 
     /**
      * @param string $value
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function generateSlug(string $value)
@@ -126,15 +129,18 @@ class SlugController
 
         if (!$this->options['generateUniqueSlugs']) {
             $this->slug = $slug;
+
             return $this->sendResponse();
         } else {
             $this->slug = $this->generateUniqueSlug($slug);
+
             return $this->sendResponse();
         }
     }
 
     /**
      * @param string $originalSlug
+     *
      * @return string
      */
     protected function generateUniqueSlug(string $originalSlug): string
@@ -143,7 +149,7 @@ class SlugController
         $i = 1;
 
         while ($this->otherRecordExistsWithSlug($slug)) {
-            $slug = $originalSlug . $this->options['slugSeparator'] . $i++;
+            $slug = $originalSlug.$this->options['slugSeparator'].$i++;
         }
 
         return $slug;
@@ -151,15 +157,16 @@ class SlugController
 
     /**
      * @param string $slug
+     *
      * @return bool
      */
     protected function otherRecordExistsWithSlug(string $slug)
     {
         $initialValue = $this->initialValue;
         $modelAttribute = $this->attribute;
-        
+
         $model = $this->model;
-        
+
         return (bool) $model::where($this->attribute, $slug)
             ->when($this->updating, function ($query) use ($modelAttribute, $initialValue) {
                 return $query->where($modelAttribute, '!=', $initialValue);
@@ -169,7 +176,7 @@ class SlugController
     }
 
     /**
-     * Send JSON response with slug
+     * Send JSON response with slug.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -182,6 +189,7 @@ class SlugController
 
     /**
      * @param string $error
+     *
      * @return mixed
      */
     protected function sendErrorResponse(string $error)

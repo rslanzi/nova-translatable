@@ -2,10 +2,10 @@
 
 namespace Rslanzi\NovaTranslatable;
 
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\Field;
-use Laravel\Nova\Fields\Expandable;
 use Laravel\Nova\Element;
+use Laravel\Nova\Fields\Expandable;
+use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class NovaTranslatable extends Field
 {
@@ -26,7 +26,14 @@ class NovaTranslatable extends Field
     protected $locales = [];
 
     /**
-     * Indicates the field kind
+     * Default locale.
+     *
+     * @var array
+     */
+    protected $locale;
+
+    /**
+     * Indicates the field kind.
      *
      * @var string
      */
@@ -35,9 +42,10 @@ class NovaTranslatable extends Field
     /**
      * Create a new field.
      *
-     * @param  string  $name
-     * @param  string|null  $attribute
-     * @param  mixed|null  $resolveCallback
+     * @param string      $name
+     * @param string|null $attribute
+     * @param mixed|null  $resolveCallback
+     *
      * @return void
      */
     public function __construct($name, $attribute = null, $resolveCallback = null)
@@ -47,17 +55,20 @@ class NovaTranslatable extends Field
         $this->locales = array_map(function ($value) {
             return __($value);
         }, config('translatable.locales'));
-        
+
+        $this->locale = config('translatable.locale', 'it');
+
         $this->withMeta([
-            'locales' => $this->locales,
-            'indexLocale' => app()->getLocale()
+            'locales'     => $this->locales,
+            'indexLocale' => app()->getLocale(),
         ]);
     }
 
     /**
      * Set configuration options for the CKEditor editor instance.
      *
-     * @param  array $options
+     * @param array $options
+     *
      * @return $this
      */
     public function options($options)
@@ -84,26 +95,27 @@ class NovaTranslatable extends Field
     /**
      * Resolve the given attribute from the given resource.
      *
-     * @param  mixed  $resource
-     * @param  string  $attribute
+     * @param mixed  $resource
+     * @param string $attribute
+     *
      * @return mixed
      */
     protected function resolveAttribute($resource, $attribute)
     {
         $results = [];
 
-        if ( class_exists('\Spatie\Translatable\TranslatableServiceProvider') ) {
+        if (class_exists('\Spatie\Translatable\TranslatableServiceProvider')) {
             $results = $resource->getTranslations($attribute);
         }
 
-        if ( class_exists('\Astrotomic\Translatable\TranslatableServiceProvider') ) {
+        if (class_exists('\Astrotomic\Translatable\TranslatableServiceProvider')) {
             $translations = $resource->translations()
                 ->get([config('translatable.locale_key'), $attribute]);
-            
+
             foreach ($this->locales as $locale => $label) {
                 $value = $translations->where('locale', $locale)->first()->$attribute ?? '';
                 if ($this->fieldType == 'json') {
-                    $results[$locale] = json_encode(json_decode($value), JSON_PRETTY_PRINT);;
+                    $results[$locale] = json_encode(json_decode($value), JSON_PRETTY_PRINT);
                 } else {
                     $results[$locale] = $value;
                 }
@@ -116,22 +128,24 @@ class NovaTranslatable extends Field
     /**
      * Hydrate the given attribute on the model based on the incoming request.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  string  $requestAttribute
-     * @param  object  $model
-     * @param  string  $attribute
+     * @param \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param string                                  $requestAttribute
+     * @param object                                  $model
+     * @param string                                  $attribute
      * @return void
      */
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        if ( class_exists('\Spatie\Translatable\TranslatableServiceProvider') ) {
+        if (class_exists('\Spatie\Translatable\TranslatableServiceProvider')) {
             parent::fillAttributeFromRequest($request, $requestAttribute, $model, $attribute);
         }
 
-        if ( class_exists('\Astrotomic\Translatable\TranslatableServiceProvider') ) {
-            if ( is_array($request[$requestAttribute]) ) {
-                foreach ( $request[$requestAttribute] as $lang => $value ) {
-                    if ($value) {
+        if (class_exists('\Astrotomic\Translatable\TranslatableServiceProvider')) {
+            if (is_array($request[$requestAttribute])) {
+                foreach ($request[$requestAttribute] as $lang => $value) {
+                    if ($this->locale == $lang) {
+                        $model->translateOrNew($lang)->{$attribute} = $value;
+                    } elseif ($value) {
                         $model->translateOrNew($lang)->{$attribute} = $value;
                     }
                 }
@@ -142,7 +156,8 @@ class NovaTranslatable extends Field
     /**
      * Set the locales to display / edit.
      *
-     * @param  array  $locales
+     * @param array $locales
+     *
      * @return $this
      */
     public function locales(array $locales)
@@ -153,7 +168,8 @@ class NovaTranslatable extends Field
     /**
      * Set the locale to display on index.
      *
-     * @param  string $locale
+     * @param string $locale
+     *
      * @return $this
      */
     public function indexLocale($locale)
@@ -182,7 +198,8 @@ class NovaTranslatable extends Field
     /**
      * Define the language syntax highlighting mode for the field.
      *
-     * @param  string  $language
+     * @param string $language
+     *
      * @return $this
      */
     public function language($language)
@@ -202,8 +219,8 @@ class NovaTranslatable extends Field
         $this->fieldType = 'json';
 
         return $this->withMeta([
-            'code' => true, 
-            'mode' => 'application/json'
+            'code' => true,
+            'mode' => 'application/json',
         ]);
     }
 
@@ -226,7 +243,7 @@ class NovaTranslatable extends Field
 
         return $this->withMeta([
             'ckeditor' => true,
-            'options' => config('nova.ckeditor-field.options', [])
+            'options'  => config('nova.ckeditor-field.options', []),
         ]);
     }
 
@@ -239,7 +256,7 @@ class NovaTranslatable extends Field
 
         return $this->withMeta([
             'sluggable' => true,
-            'slug' => $slugField
+            'slug'      => $slugField,
         ]);
     }
 

@@ -1,4 +1,10 @@
+<p align="center"><img height="188" width="198" src="https://riccardoslanzi.com/img/nova-translatable.png"></p>
 # Laravel Nova Translatable
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/rslanzi/nova-translatable.svg?style=flat-square)](https://packagist.org/packages/rslanzi/nova-translatable)
+[![Packagist](https://img.shields.io/packagist/l/rslanzi/nova-translatable.svg)]()
+[![StyleCI](https://styleci.io/repos/339990782/shield?branch=main)](https://styleci.io/repos/339990782)
+
 
 This [Laravel Nova](https://nova.laravel.com/) field allows you to manage translated fields with [astrotomic/laravel-translatable](https://github.com/Astrotomic/laravel-translatable).
 
@@ -35,7 +41,7 @@ Install the package in a Laravel Nova project via Composer:
 
 ```bash
 # Install nova-translatable
-composer install rslanzi/nova-translatable
+composer require rslanzi/nova-translatable
 
 # Publish configuration (optional, but useful for setting default locales)
 php artisan vendor:publish --tag="nova-translatable-config"
@@ -103,7 +109,7 @@ Automatically populate a slug field based on another field. Title in this case.
 NovaTranslatable::make('Title')
     ->sluggable('Slug'),
 NovaTranslatableSlug::make('Slug')
-    ->singleLine()
+    ->hideFromIndex(),
 ```
 
 ### Code Field 
@@ -133,6 +139,15 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+## Support the development
+**Do you like this project? Support it by donating**
+
+- PayPal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=rslanzi%40gmail%2ecom&lc=CY&item_name=NovaTranslatable&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Nova Translatable, please send an e-mail to Riccardo Slanzi at rslanzi@gmail.com. All security vulnerabilities will be promptly addressed.
+
 ## License
 
-This project is open-sourced software licensed under the [MIT license](LICENSE.md).
+Nova Translatable is free software distributed under the terme of the [MIT license](LICENSE.md).

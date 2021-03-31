@@ -2,10 +2,10 @@
 
 namespace Rslanzi\NovaTranslatable;
 
-use Laravel\Nova\Nova;
-use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Nova;
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -22,13 +22,13 @@ class FieldServiceProvider extends ServiceProvider
 
         Nova::serving(function (ServingNova $event) {
             Nova::style('nova-translatable', __DIR__.'/../dist/css/field.css');
-            
+
             Nova::script('nova-translatable', __DIR__.'/../dist/js/field.js');
             Nova::script('ckeditor', config('nova.ckeditor-field.ckeditor_url', 'https://cdn.ckeditor.com/4.11.3/full-all/ckeditor.js'));
         });
 
         $this->publishes([
-            __DIR__ . '/../config/ckeditor-field.php' => config_path('nova/ckeditor-field.php'),
+            __DIR__.'/../config/ckeditor-field.php' => config_path('nova/ckeditor-field.php'),
         ], 'config');
     }
 
