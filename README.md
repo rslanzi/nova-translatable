@@ -1,5 +1,5 @@
 <p align="center"><img src="https://riccardoslanzi.com/img/nova-translatable.png"></p>
-# Laravel Nova Translatable
+<h1>Laravel Nova Translatable</h1>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rslanzi/nova-translatable.svg?style=flat-square)](https://packagist.org/packages/rslanzi/nova-translatable)
 [![Packagist](https://img.shields.io/packagist/l/rslanzi/nova-translatable.svg)]()
