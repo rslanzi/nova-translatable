@@ -61,6 +61,7 @@ class NovaTranslatableSlug extends Field
                 $results[$translation[config('translatable.locale_key')]] = $translation[$attribute];
             }
         }
+
         return $results;
     }
 
@@ -105,30 +106,31 @@ class NovaTranslatableSlug extends Field
     }
 
     public function slugUnique(): Element
-	{
+    {
         return $this->setOption('generateUniqueSlugs', true);
     }
 
-	public function slugMaxLength(int $length): Element
-	{
+    public function slugMaxLength(int $length): Element
+    {
         return $this->setOption('maximumLength', $length);
-	}
+    }
 
-	public function slugSeparator(string $separator): Element
-	{
-		return $this->setOption('slugSeparator', $separator);
-	}
+    public function slugSeparator(string $separator): Element
+    {
+        return $this->setOption('slugSeparator', $separator);
+    }
 
-	public function slugLanguage(string $language): Element
-	{
-		return $this->setOption('slugLanguage', $language);
-	}
+    public function slugLanguage(string $language): Element
+    {
+        return $this->setOption('slugLanguage', $language);
+    }
 
-	protected function setOption(string $name, string $value): Element
-	{
-		$this->options[$name] = $value;
-		return $this->withMeta(['options' => $this->options]);
-	}
+    protected function setOption(string $name, string $value): Element
+    {
+        $this->options[$name] = $value;
+
+        return $this->withMeta(['options' => $this->options]);
+    }
 
     /**
      * Use Counted.

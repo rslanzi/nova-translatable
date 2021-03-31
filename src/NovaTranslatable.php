@@ -132,6 +132,7 @@ class NovaTranslatable extends Field
      * @param string                                  $requestAttribute
      * @param object                                  $model
      * @param string                                  $attribute
+     *
      * @return void
      */
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
