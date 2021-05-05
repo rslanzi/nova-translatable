@@ -11,3 +11,6 @@
 /tests              export-ignore
 /.editorconfig      export-ignore
 /docs               export-ignore
+/.php_cs            export-ignore
+/.github            export-ignore
+/psalm.xml          export-ignore

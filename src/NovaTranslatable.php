@@ -48,7 +48,7 @@ class NovaTranslatable extends Field
      *
      * @return void
      */
-    public function __construct($name, $attribute = null, $resolveCallback = null)
+    public function __construct(string $name, $attribute = [], $resolveCallback = null)
     {
         parent::__construct($name, $attribute, $resolveCallback);
 
@@ -59,7 +59,7 @@ class NovaTranslatable extends Field
         $this->locale = config('translatable.locale', 'it');
 
         $this->withMeta([
-            'locales'     => $this->locales,
+            'locales' => $this->locales,
             'indexLocale' => app()->getLocale(),
         ]);
     }
@@ -114,11 +114,7 @@ class NovaTranslatable extends Field
 
             foreach ($this->locales as $locale => $label) {
                 $value = $translations->where('locale', $locale)->first()->$attribute ?? '';
-                if ($this->fieldType == 'json') {
-                    $results[$locale] = json_encode(json_decode($value), JSON_PRETTY_PRINT);
-                } else {
-                    $results[$locale] = $value;
-                }
+                $results[$locale] = ($this->fieldType == 'json') ? json_encode(json_decode($value), JSON_PRETTY_PRINT) : $value;
             }
         }
 
@@ -144,11 +140,11 @@ class NovaTranslatable extends Field
         if (class_exists('\Astrotomic\Translatable\TranslatableServiceProvider')) {
             if (is_array($request[$requestAttribute])) {
                 foreach ($request[$requestAttribute] as $lang => $value) {
-                    if ($this->locale == $lang) {
-                        $model->translateOrNew($lang)->{$attribute} = $value;
-                    } elseif ($value) {
-                        $model->translateOrNew($lang)->{$attribute} = $value;
+                    if ($this->locale != $lang and ! $value) {
+                        continue;
                     }
+
+                    $model->translateOrNew($lang)->{$attribute} = $value;
                 }
             }
         }
@@ -184,6 +180,39 @@ class NovaTranslatable extends Field
     public function singleLine()
     {
         return $this->withMeta(['singleLine' => true]);
+    }
+
+    /**
+     * Use Sluggable.
+     */
+    public function sluggable($slugField = 'Slug'): Element
+    {
+        $this->fieldType = 'sluggable';
+
+        return $this->withMeta([
+            'sluggable' => true,
+            'slug' => $slugField,
+        ]);
+    }
+
+    /**
+     * Use Counted.
+     */
+    public function counted()
+    {
+        $this->fieldType = 'counted';
+
+        return $this->withMeta(['counted' => true]);
+    }
+
+    public function maxChars(int $characters)
+    {
+        return $this->withMeta(['maxChars' => $characters]);
+    }
+
+    public function warningAt(int $characters)
+    {
+        return $this->withMeta(['warningAt' => $characters]);
     }
 
     /**
@@ -244,40 +273,7 @@ class NovaTranslatable extends Field
 
         return $this->withMeta([
             'ckeditor' => true,
-            'options'  => config('nova.ckeditor-field.options', []),
+            'options' => config('nova.ckeditor-field.options', []),
         ]);
-    }
-
-    /**
-     * Use Sluggable.
-     */
-    public function sluggable($slugField = 'Slug'): Element
-    {
-        $this->fieldType = 'sluggable';
-
-        return $this->withMeta([
-            'sluggable' => true,
-            'slug'      => $slugField,
-        ]);
-    }
-
-    /**
-     * Use Counted.
-     */
-    public function counted()
-    {
-        $this->fieldType = 'counted';
-
-        return $this->withMeta(['counted' => true]);
-    }
-
-    public function maxChars(int $characters)
-    {
-        return $this->withMeta(['maxChars' => $characters]);
-    }
-
-    public function warningAt(int $characters)
-    {
-        return $this->withMeta(['warningAt' => $characters]);
     }
 }

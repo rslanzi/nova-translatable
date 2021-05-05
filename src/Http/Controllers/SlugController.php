@@ -10,9 +10,9 @@ class SlugController
 {
     protected $options = [
         'generateUniqueSlugs' => false,
-        'maximumLength'       => 255,
-        'slugSeparator'       => '-',
-        'slugLanguage'        => 'en',
+        'maximumLength' => 255,
+        'slugSeparator' => '-',
+        'slugLanguage' => 'en',
     ];
 
     protected $attribute;
@@ -43,7 +43,7 @@ class SlugController
             $this->initialValue = $request->input('initialValue');
         }
 
-        if (!$request->filled('value')) {
+        if (! $request->filled('value')) {
             return $this->sendResponse();
         }
 
@@ -55,7 +55,7 @@ class SlugController
             $this->mergeOptions($request->input('options'));
         }
 
-        if ($this->options['generateUniqueSlugs'] && !$this->model) {
+        if ($this->options['generateUniqueSlugs'] && ! $this->model) {
             throw new \Exception('Slug model undefined! Use slugModel() on the slug field!');
         }
 
@@ -67,23 +67,23 @@ class SlugController
      */
     protected function getModelOptions(string $modelClass)
     {
-        if (!class_exists($modelClass)) {
+        if (! class_exists($modelClass)) {
             return;
         }
 
         $model = new $modelClass();
         $this->model = $modelClass;
 
-        if (!method_exists($model, 'getSlugOptions')) {
+        if (! method_exists($model, 'getSlugOptions')) {
             return;
         }
 
         if ($modelSlugOptions = $model->getSlugOptions()) {
             $modelOptions = [
                 'generateUniqueSlugs' => $modelSlugOptions->generateUniqueSlugs,
-                'maximumLength'       => $modelSlugOptions->maximumLength,
-                'slugSeparator'       => $modelSlugOptions->slugSeparator,
-                'slugLanguage'        => $modelSlugOptions->slugLanguage,
+                'maximumLength' => $modelSlugOptions->maximumLength,
+                'slugSeparator' => $modelSlugOptions->slugSeparator,
+                'slugLanguage' => $modelSlugOptions->slugLanguage,
             ];
             $this->mergeOptions($modelOptions);
         }
@@ -96,15 +96,15 @@ class SlugController
      */
     protected function mergeOptions($options)
     {
-        if (!is_array($options)) {
+        if (! is_array($options)) {
             return;
         }
 
         $validator = Validator::make($options, [
             'generateUniqueSlugs' => 'boolean',
-            'maximumLength'       => 'numeric',
-            'slugSeparator'       => 'string',
-            'slugLanguage'        => 'string',
+            'maximumLength' => 'numeric',
+            'slugSeparator' => 'string',
+            'slugLanguage' => 'string',
         ]);
 
         $options = $validator->validate();
@@ -127,15 +127,15 @@ class SlugController
             $slug = substr($slug, 0, $this->options['maximumLength']);
         }
 
-        if (!$this->options['generateUniqueSlugs']) {
+        if (! $this->options['generateUniqueSlugs']) {
             $this->slug = $slug;
 
             return $this->sendResponse();
-        } else {
-            $this->slug = $this->generateUniqueSlug($slug);
-
-            return $this->sendResponse();
         }
+
+        $this->slug = $this->generateUniqueSlug($slug);
+
+        return $this->sendResponse();
     }
 
     /**

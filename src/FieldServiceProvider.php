@@ -42,6 +42,7 @@ class FieldServiceProvider extends ServiceProvider
         if ($this->app->routesAreCached()) {
             return;
         }
+
         Route::middleware(['nova'])
             ->prefix('nova-vendor/nova-translatable')
             ->group(__DIR__.'/../routes/api.php');

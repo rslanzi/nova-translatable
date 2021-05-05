@@ -35,7 +35,7 @@ class NovaTranslatableSlug extends Field
         }, config('translatable.locales'));
 
         $this->withMeta([
-            'locales'     => $locales,
+            'locales' => $locales,
             'indexLocale' => app()->getLocale(),
         ]);
     }
@@ -51,9 +51,12 @@ class NovaTranslatableSlug extends Field
     protected function resolveAttribute($resource, $attribute)
     {
         $results = [];
+
         if (class_exists('\Spatie\Translatable\TranslatableServiceProvider')) {
-            $results = $resource->getTranslations($attribute);
-        } elseif (class_exists('\Astrotomic\Translatable\TranslatableServiceProvider')) {
+            return $resource->getTranslations($attribute);
+        }
+
+        if (class_exists('\Astrotomic\Translatable\TranslatableServiceProvider')) {
             $translations = $resource->translations()
                 ->get([config('translatable.locale_key'), $attribute])
                 ->toArray();
