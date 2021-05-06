@@ -2,7 +2,6 @@
 
 namespace Rslanzi\NovaTranslatable;
 
-use Laravel\Nova\Element;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -21,12 +20,12 @@ class NovaTranslatableSlug extends Field
      * Create a new field.
      *
      * @param string      $name
-     * @param string|null $attribute
+     * @param string|callable|null $attribute
      * @param mixed|null  $resolveCallback
      *
      * @return void
      */
-    public function __construct($name, $attribute = null, $resolveCallback = null)
+    public function __construct(string $name, $attribute = null, $resolveCallback = null)
     {
         parent::__construct($name, $attribute, $resolveCallback);
 
@@ -103,36 +102,62 @@ class NovaTranslatableSlug extends Field
         return $this->withMeta(['locales' => $locales]);
     }
 
-    public function slugModel(string $model): Element
-    {
-        return $this->withMeta(['model' => $model]);
-    }
-
-    public function slugUnique(): Element
+    /**
+     * Set slug value unique.
+     *
+     * @return $this
+     */
+    public function unique(): self
     {
         return $this->setOption('generateUniqueSlugs', true);
     }
 
-    public function slugMaxLength(int $length): Element
+    /**
+     * With unique, set the related model for the unicity.
+     *
+     * @param string $model
+     *
+     * @return $this
+     */
+    public function model(string $model): self
+    {
+        return $this->withMeta(['model' => $model]);
+    }
+
+    /**
+     * Max slug length.
+     *
+     * @param int $length
+     *
+     * @return $this
+     */
+    public function maxLength(int $length): self
     {
         return $this->setOption('maximumLength', $length);
     }
 
-    public function slugSeparator(string $separator): Element
+    /**
+     * Character used to replace space.
+     *
+     * @param string $separator
+     *
+     * @return $this
+     */
+    public function separator(string $separator): self
     {
         return $this->setOption('slugSeparator', $separator);
     }
 
-    public function slugLanguage(string $language): Element
+    /**
+     * Set slug language.
+     *
+     * @param string $language
+     *
+     * @return $this
+     */
+    public function language(string $language): self
     {
         return $this->setOption('slugLanguage', $language);
-    }
-
-    protected function setOption(string $name, string $value): Element
-    {
-        $this->options[$name] = $value;
-
-        return $this->withMeta(['options' => $this->options]);
     }
 
     /**
@@ -143,13 +168,40 @@ class NovaTranslatableSlug extends Field
         return $this->withMeta(['counted' => true]);
     }
 
+    /**
+     * With counted, indicate the maximum threshold length.
+     *
+     * @param int $characters
+     *
+     * @return NovaTranslatableSlug
+     */
     public function maxChars(int $characters)
     {
         return $this->withMeta(['maxChars' => $characters]);
     }
 
+    /**
+     * With counted, indicate the warning threshold length.
+     *
+     * @param int $characters
+     *
+     * @return NovaTranslatableSlug
+     */
     public function warningAt(int $characters)
     {
         return $this->withMeta(['warningAt' => $characters]);
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return $this
+     */
+    protected function setOption(string $name, string $value): self
+    {
+        $this->options[$name] = $value;
+
+        return $this->withMeta(['options' => $this->options]);
     }
 }
