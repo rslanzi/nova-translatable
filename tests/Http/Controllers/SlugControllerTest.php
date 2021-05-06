@@ -2,7 +2,6 @@
 
 namespace Rslanzi\NovaTranslatable\Tests\Feature\Http\Controllers;
 
-use Rslanzi\NovaTranslatable\Http\Controllers\SlugController;
 use Rslanzi\NovaTranslatable\Tests\TestCase;
 
 class SlugControllerTest extends TestCase
