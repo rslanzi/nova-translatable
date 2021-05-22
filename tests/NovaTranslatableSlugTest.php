@@ -113,7 +113,7 @@ class NovaTranslatableSlugTest extends TestCase
             'locales' => ['it', 'en'],
             'indexLocale' => 'it',
             'options' => [
-                'slugSeparator' => $separator,
+                'separator' => $separator,
             ],
         ];
 
@@ -130,7 +130,7 @@ class NovaTranslatableSlugTest extends TestCase
             'locales' => ['it', 'en'],
             'indexLocale' => 'it',
             'options' => [
-                'slugLanguage' => $language,
+                'language' => $language,
             ],
         ];
 

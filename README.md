@@ -3,7 +3,6 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rslanzi/nova-translatable.svg?style=flat-square)](https://packagist.org/packages/rslanzi/nova-translatable)
 [![Packagist](https://img.shields.io/packagist/l/rslanzi/nova-translatable.svg)]()
-[![StyleCI](https://styleci.io/repos/339990782/shield?branch=main)](https://styleci.io/repos/339990782)
 
 
 This [Laravel Nova](https://nova.laravel.com/) field allows you to manage translated fields with [astrotomic/laravel-translatable](https://github.com/Astrotomic/laravel-translatable).
@@ -37,16 +36,23 @@ waynestate/nova-ckeditor4-field: ^0.6.0
 
 Firstly, set up [astrotomic/laravel-translatable](https://github.com/astrotomic/laravel-translatable).
 
-Install the package in a Laravel Nova project via Composer:
+Then, install this package in a Laravel Nova project via Composer:
 
 ```bash
 # Install nova-translatable
 composer require rslanzi/nova-translatable
-
-# Publish configuration (optional, but useful for setting default locales)
+# Publish configuration
 php artisan vendor:publish --tag="nova-translatable-config"
 ```
 
+And finally, set the locales in it as an array with string keys, like this:
+
+```php
+'locales' => [
+    'en' => 'English',
+    'it' => 'Italiano',
+],
+```
 ## Usage
 
 ### Text Field 
@@ -103,15 +109,6 @@ NovaTranslatable::make('Text')
     ->trix()
 ```
 
-### Sluggable Field 
-Automatically populate a slug field based on another field. Title in this case.
-```php
-NovaTranslatable::make('Title')
-    ->sluggable('Slug'),
-NovaTranslatableSlug::make('Slug')
-    ->hideFromIndex(),
-```
-
 ### Code Field 
 Code field. Use a syntax highlighted text area.
 ```php
@@ -133,6 +130,45 @@ dockerfile, javascript, markdown, nginx, php, ruby, sass, shell, vue, xml, yaml
 NovaTranslatable::make('Text')
     ->json()
 ```
+
+### Sluggable Field
+Automatically populate a slug field based on another field. Title in this case.
+```php
+NovaTranslatable::make('Title')
+    ->sluggable('Slug'),
+NovaTranslatableSlug::make('Slug')
+    ->hideFromIndex(),
+```
+
+#### Sluggable options
+##### Maximum length
+Limit the maximum length of the generated slug:
+```php
+NovaTranslatableSlug::make('Slug')
+    ->maxLength(150),
+```
+##### Separator
+Sets the string with which to replace all whitespace in the field.
+```php
+NovaTranslatableSlug::make('Slug')
+    ->separator('-'),
+```
+##### Unique
+The generated slugs won't be unique unless you call the unique() method:
+```php
+NovaTranslatableSlug::make('Slug')
+    ->unique(),
+```
+##### Unique on Model
+When these two options are set the generated slug will be unique on the set model regarding the attribute value of the NovaTranslatableSlug field.
+```php
+NovaTranslatableSlug::make('Slug')
+    ->unique()
+    ->model(static::$model),
+```
+##### Usage with [Spatie\Sluggable](https://github.com/spatie/laravel-sluggable)
+If in your Eloquent model use Spatie\Sluggable's HasSlug trait and implements its getSlugOptions() method, you don't have to set the separator, maximum length or language for the field. The values you already set on your model will be used.
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

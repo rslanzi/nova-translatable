@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Nova;
+use Rslanzi\NovaTranslatable\Http\Middleware\Authorize;
 
-class FieldServiceProvider extends ServiceProvider
+class NovaTranslatableServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -16,10 +17,6 @@ class FieldServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->booted(function () {
-            $this->routes();
-        });
-
         Nova::serving(function (ServingNova $event) {
             Nova::style('nova-translatable', __DIR__.'/../dist/css/field.css');
 
@@ -29,11 +26,19 @@ class FieldServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../config/ckeditor-field.php' => config_path('nova/ckeditor-field.php'),
-        ], 'config');
+        ], ['config', 'nova-translatable-ckeditor']);
+
+        $this->publishes([
+            __DIR__.'/../config/translatable.php' => config_path('translatable.php'),
+        ], ['config', 'nova-translatable-config']);
+
+        $this->app->booted(function () {
+            $this->routes();
+        });
     }
 
     /**
-     * Register the tool's routes.
+     * Register the field's routes.
      *
      * @return void
      */
@@ -43,8 +48,8 @@ class FieldServiceProvider extends ServiceProvider
             return;
         }
 
-        Route::middleware(['nova'])
-            ->prefix('nova-vendor/nova-translatable')
+        Route::middleware(['nova', 'api', Authorize::class])
+            ->prefix('nova-vendor/rslanzi/nova-translatable')
             ->group(__DIR__.'/../routes/api.php');
     }
 

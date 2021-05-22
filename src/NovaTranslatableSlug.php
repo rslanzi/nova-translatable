@@ -2,10 +2,10 @@
 
 namespace Rslanzi\NovaTranslatable;
 
-use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class NovaTranslatableSlug extends Field
+class NovaTranslatableSlug extends Text
 {
     /**
      * The field's component.
@@ -29,7 +29,7 @@ class NovaTranslatableSlug extends Field
     {
         parent::__construct($name, $attribute, $resolveCallback);
 
-        $locales = array_map(function ($value) {
+        $locales = array_map(function (string $value) {
             return __($value);
         }, config('translatable.locales'));
 
@@ -77,7 +77,7 @@ class NovaTranslatableSlug extends Field
      *
      * @return void
      */
-    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
+    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute): void
     {
         if (class_exists('\Spatie\Translatable\TranslatableServiceProvider')) {
             parent::fillAttributeFromRequest($request, $requestAttribute, $model, $attribute);
@@ -97,7 +97,7 @@ class NovaTranslatableSlug extends Field
      *
      * @return $this
      */
-    public function locales(array $locales)
+    public function locales(array $locales): self
     {
         return $this->withMeta(['locales' => $locales]);
     }
@@ -107,8 +107,10 @@ class NovaTranslatableSlug extends Field
      *
      * @return $this
      */
-    public function unique(): self
+    public function unique(\Illuminate\Database\Eloquent\Model $model): self
     {
+        $this->model($model);
+
         return $this->setOption('generateUniqueSlugs', true);
     }
 
@@ -119,7 +121,7 @@ class NovaTranslatableSlug extends Field
      *
      * @return $this
      */
-    public function model(string $model): self
+    protected function model(string $model): self
     {
         return $this->withMeta(['model' => $model]);
     }
@@ -145,7 +147,7 @@ class NovaTranslatableSlug extends Field
      */
     public function separator(string $separator): self
     {
-        return $this->setOption('slugSeparator', $separator);
+        return $this->setOption('separator', $separator);
     }
 
     /**
@@ -157,13 +159,13 @@ class NovaTranslatableSlug extends Field
      */
     public function language(string $language): self
     {
-        return $this->setOption('slugLanguage', $language);
+        return $this->setOption('language', $language);
     }
 
     /**
      * Use Counted.
      */
-    public function counted()
+    public function counted(): self
     {
         return $this->withMeta(['counted' => true]);
     }
@@ -175,7 +177,7 @@ class NovaTranslatableSlug extends Field
      *
      * @return NovaTranslatableSlug
      */
-    public function maxChars(int $characters)
+    public function maxChars(int $characters): self
     {
         return $this->withMeta(['maxChars' => $characters]);
     }
@@ -187,18 +189,18 @@ class NovaTranslatableSlug extends Field
      *
      * @return NovaTranslatableSlug
      */
-    public function warningAt(int $characters)
+    public function warningAt(int $characters): self
     {
         return $this->withMeta(['warningAt' => $characters]);
     }
 
     /**
      * @param string $name
-     * @param string $value
+     * @param mixed $value
      *
-     * @return $this
+     * @return self
      */
-    protected function setOption(string $name, string $value): self
+    protected function setOption(string $name, mixed $value): self
     {
         $this->options[$name] = $value;
 

@@ -5,14 +5,15 @@ namespace Rslanzi\NovaTranslatable\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class SlugController
 {
     protected $options = [
         'generateUniqueSlugs' => false,
         'maximumLength' => 255,
-        'slugSeparator' => '-',
-        'slugLanguage' => 'en',
+        'separator' => '-',
+        'language' => 'en',
     ];
 
     protected $attribute;
@@ -25,9 +26,9 @@ class SlugController
     /**
      * @param Request $request
      *
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getSlug(Request $request)
     {
@@ -56,10 +57,22 @@ class SlugController
         }
 
         if ($this->options['generateUniqueSlugs'] && ! $this->model) {
-            throw new \Exception('Slug model undefined! Use slugModel() on the slug field!');
+            throw new \Exception('Slug model undefined! Use model() on the slug field!');
         }
 
         return $this->generateSlug($request->input('value'));
+    }
+
+    /**
+     * Send JSON response with slug.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function sendResponse()
+    {
+        return response()->json([
+            'slug' => $this->slug,
+        ]);
     }
 
     /**
@@ -82,8 +95,8 @@ class SlugController
             $modelOptions = [
                 'generateUniqueSlugs' => $modelSlugOptions->generateUniqueSlugs,
                 'maximumLength' => $modelSlugOptions->maximumLength,
-                'slugSeparator' => $modelSlugOptions->slugSeparator,
-                'slugLanguage' => $modelSlugOptions->slugLanguage,
+                'separator' => $modelSlugOptions->separator,
+                'language' => $modelSlugOptions->language,
             ];
             $this->mergeOptions($modelOptions);
         }
@@ -103,8 +116,8 @@ class SlugController
         $validator = Validator::make($options, [
             'generateUniqueSlugs' => 'boolean',
             'maximumLength' => 'numeric',
-            'slugSeparator' => 'string',
-            'slugLanguage' => 'string',
+            'separator' => 'string',
+            'language' => 'string',
         ]);
 
         $options = $validator->validate();
@@ -121,7 +134,7 @@ class SlugController
      */
     protected function generateSlug(string $value)
     {
-        $slug = Str::slug($value, $this->options['slugSeparator'], $this->options['slugLanguage']);
+        $slug = Str::slug($value, $this->options['separator'], $this->options['language']);
 
         if ($this->options['maximumLength']) {
             $slug = substr($slug, 0, $this->options['maximumLength']);
@@ -149,7 +162,7 @@ class SlugController
         $i = 1;
 
         while ($this->otherRecordExistsWithSlug($slug)) {
-            $slug = $originalSlug.$this->options['slugSeparator'].$i++;
+            $slug = $originalSlug . $this->options['separator'] . $i++;
         }
 
         return $slug;
@@ -167,24 +180,12 @@ class SlugController
 
         $model = $this->model;
 
-        return (bool) $model::where($this->attribute, $slug)
+        return (bool)$model::where($this->attribute, $slug)
             ->when($this->updating, function ($query) use ($modelAttribute, $initialValue) {
                 return $query->where($modelAttribute, '!=', $initialValue);
             })
             ->withoutGlobalScopes()
             ->first();
-    }
-
-    /**
-     * Send JSON response with slug.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function sendResponse()
-    {
-        return response()->json([
-            'slug' => $this->slug,
-        ]);
     }
 
     /**

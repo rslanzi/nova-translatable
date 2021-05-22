@@ -48,15 +48,15 @@ class NovaTranslatable extends Field
      *
      * @return void
      */
-    public function __construct(string $name, $attribute = [], $resolveCallback = null)
+    public function __construct(string $name, $attribute = null, $resolveCallback = null)
     {
         parent::__construct($name, $attribute, $resolveCallback);
 
-        $this->locales = array_map(function ($value) {
+        $this->locales = array_map(function (string $value) {
             return __($value);
         }, config('translatable.locales'));
 
-        $this->locale = config('translatable.locale', 'it');
+        $this->locale = config('translatable.locale', 'en');
 
         $this->withMeta([
             'locales' => $this->locales,
@@ -71,7 +71,7 @@ class NovaTranslatable extends Field
      *
      * @return $this
      */
-    public function options($options)
+    public function options($options): self
     {
         $currentOptions = $this->meta['options'] ?? [];
 
@@ -85,7 +85,7 @@ class NovaTranslatable extends Field
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return array_merge(parent::jsonSerialize(), [
             'shouldShow' => $this->shouldBeExpanded(),
@@ -131,7 +131,7 @@ class NovaTranslatable extends Field
      *
      * @return void
      */
-    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
+    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute): void
     {
         if (class_exists('\Spatie\Translatable\TranslatableServiceProvider')) {
             parent::fillAttributeFromRequest($request, $requestAttribute, $model, $attribute);
@@ -157,7 +157,7 @@ class NovaTranslatable extends Field
      *
      * @return $this
      */
-    public function locales(array $locales)
+    public function locales(array $locales): self
     {
         return $this->withMeta(['locales' => $locales]);
     }
@@ -169,7 +169,7 @@ class NovaTranslatable extends Field
      *
      * @return $this
      */
-    public function indexLocale($locale)
+    public function indexLocale($locale): self
     {
         return $this->withMeta(['indexLocale' => $locale]);
     }
@@ -177,7 +177,7 @@ class NovaTranslatable extends Field
     /**
      * Set the input field to a single line text field.
      */
-    public function singleLine()
+    public function singleLine(): self
     {
         return $this->withMeta(['singleLine' => true]);
     }
@@ -185,7 +185,7 @@ class NovaTranslatable extends Field
     /**
      * Use Sluggable.
      */
-    public function sluggable($slugField = 'Slug'): Element
+    public function sluggable(string $slugField = 'Slug'): self
     {
         $this->fieldType = 'sluggable';
 
@@ -198,19 +198,19 @@ class NovaTranslatable extends Field
     /**
      * Use Counted.
      */
-    public function counted()
+    public function counted(): self
     {
         $this->fieldType = 'counted';
 
         return $this->withMeta(['counted' => true]);
     }
 
-    public function maxChars(int $characters)
+    public function maxChars(int $characters): self
     {
         return $this->withMeta(['maxChars' => $characters]);
     }
 
-    public function warningAt(int $characters)
+    public function warningAt(int $characters): self
     {
         return $this->withMeta(['warningAt' => $characters]);
     }
@@ -218,7 +218,7 @@ class NovaTranslatable extends Field
     /**
      * Use Code field.
      */
-    public function code()
+    public function code(): self
     {
         $this->fieldType = 'code';
 
@@ -232,7 +232,7 @@ class NovaTranslatable extends Field
      *
      * @return $this
      */
-    public function language($language)
+    public function language($language): self
     {
         if ($this->fieldType == 'code') {
             return $this->options(['mode' => $language]);
@@ -244,7 +244,7 @@ class NovaTranslatable extends Field
     /**
      * Use as JSON field.
      */
-    public function json()
+    public function json(): self
     {
         $this->fieldType = 'json';
 
@@ -257,7 +257,7 @@ class NovaTranslatable extends Field
     /**
      * Use Trix Editor.
      */
-    public function trix()
+    public function trix(): self
     {
         $this->fieldType = 'trix';
 
@@ -267,7 +267,7 @@ class NovaTranslatable extends Field
     /**
      * Use CKEditor.
      */
-    public function ckeditor()
+    public function ckeditor(): self
     {
         $this->fieldType = 'ckeditor';
 

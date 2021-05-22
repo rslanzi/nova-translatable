@@ -23,7 +23,7 @@ class NovaTranslatableTest extends TestCase
     }
 
     /** @test */
-    public function it_works_for_a_field_withwith_a_name()
+    public function it_works_for_a_field_with_a_name()
     {
         $translatable = NovaTranslatable::make('field');
 
@@ -33,7 +33,7 @@ class NovaTranslatableTest extends TestCase
         ];
 
         $this->assertEquals('text', $translatable->fieldType);
-        $this->assertCount(0, $translatable->attribute);
+        $this->assertEquals('field', $translatable->attribute);
         $this->assertEquals($expected, $translatable->meta);
     }
 

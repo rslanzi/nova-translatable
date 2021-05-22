@@ -1,10 +1,15 @@
 <template>
-    <default-field :field="field" :errors="errors" :show-help-text="showHelpText" full-width-content="true">
+    <default-field
+        :field="field"
+        :errors="errors"
+        :show-help-text="showHelpText"
+        :full-width-content="field.code ? true : false"
+        >
         <template slot="field">
-            <a 
-                class="inline-block font-bold cursor-pointer mr-2 animate-text-color select-none" 
+            <a
+                class="inline-block font-bold cursor-pointer mr-2 animate-text-color select-none"
                 :class="{ 'text-60': localeKey !== currentLocale, 'text-primary': localeKey === currentLocale }"
-                :key="`a-${localeKey}`" 
+                :key="`a-${localeKey}`"
                 v-for="(locale, localeKey) in field.locales"
                 @click="changeTab(localeKey)"
             >
@@ -12,11 +17,12 @@
             </a>
 
             <textarea
-                ref="field" 
+                ref="field"
                 :id="field.name"
                 class="mt-4 w-full form-control form-input form-input-bordered py-3 min-h-textarea"
                 :class="errorClasses"
                 :placeholder="field.name"
+                :errors="errors"
                 v-model="value[currentLocale]"
                 v-if="!field.singleLine && !field.trix && !field.ckeditor && !field.sluggable && !field.code"
                 @keydown.tab="handleTab"
@@ -24,7 +30,7 @@
 
             <div v-if="!field.singleField && field.code" class="mt-4">
                 <code-field
-                    ref="field" 
+                    ref="field"
                     :field="field"
                     :value="value[currentLocale]"
                     @change="handleChange"
@@ -45,66 +51,57 @@
                 <vue-ckeditor
                     ref="field"
                     :id="field.name"
-                    v-model="value[currentLocale]"
                     :config="config"
+                    :errors="errors"
+                    v-model="value[currentLocale]"
                 />
-
-                <p v-if="hasError" class="my-2 text-danger">
-                    {{ firstError }}
-                </p>
             </div>
 
             <div v-if="!field.singleField && field.sluggable" class="mt-4 w-full">
                 <input
-                    ref="field" 
+                    ref="field"
                     :id="field.name"
                     type="text"
                     @keyup="handleKeydown"
                     class="w-full form-control form-input form-input-bordered"
                     :class="errorClasses"
                     :placeholder="field.name"
+                    :errors="errors"
                     v-model="value[currentLocale]"
                 />
-
-                <p v-if="hasError" class="my-2 text-danger">
-                    {{ firstError }}
-                </p>
             </div>
 
-            <input 
-                ref="field" 
+            <input
+                ref="field"
                 :id="field.name"
-                type="text" 
+                type="text"
                 class="mt-4 w-full form-control form-input form-input-bordered"
                 :class="errorClasses"
                 :placeholder="field.name"
+                :errors="errors"
                 v-model="value[currentLocale]"
                 v-if="field.singleLine"
                 @keydown.tab="handleTab"
             />
 
-            <charcounter 
-                ref="counted" 
-                :currentLocale="currentLocale" 
-                :value="value[currentLocale] || ''" 
-                :max-chars="field.maxChars" 
-                :warning-threshold="field.warningAt" 
+            <charcounter
+                ref="counted"
+                :currentLocale="currentLocale"
+                :value="value[currentLocale] || ''"
+                :max-chars="field.maxChars"
+                :warning-threshold="field.warningAt"
                 v-if="field.counted"></charcounter>
-
-            <p v-if="hasError" class="my-2 text-danger">
-                {{ firstError }}
-            </p>
         </template>
     </default-field>
 </template>
 
 <script>
     import Trix from './Trix/Trix'
-    
+
     import VueCkeditor from 'vue-ckeditor2';
 
     import Charcounter from './Charcounter/Charcounter';
-    
+
     import CodeField from './Code/FormField';
 
     import { FormField, HandlesValidationErrors } from 'laravel-nova'

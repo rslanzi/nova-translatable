@@ -1,10 +1,10 @@
 <template>
-    <default-field :field="field">
+    <default-field :field="field" :errors="errors">
         <template slot="field">
-            <a 
-                class="inline-block font-bold cursor-pointer mr-2 animate-text-color select-none" 
+            <a
+                class="inline-block font-bold cursor-pointer mr-2 animate-text-color select-none"
                 :class="{ 'text-60': localeKey !== currentLocale, 'text-primary': localeKey === currentLocale }"
-                :key="`a-${localeKey}`" 
+                :key="`a-${localeKey}`"
                 v-for="(locale, localeKey) in field.locales"
                 @click="changeTab(localeKey)"
             >
@@ -18,20 +18,17 @@
                 class="mt-4 w-full form-control form-input form-input-bordered"
                 :class="errorClasses"
                 :placeholder="field.name"
+                :errors="errors"
                 v-model="value[currentLocale]"
             />
 
-            <charcounter 
-                ref="counted" 
-                :currentLocale="currentLocale" 
-                :value="value[currentLocale] || ''" 
-                :max-chars="field.maxChars" 
-                :warning-threshold="field.warningAt" 
+            <charcounter
+                ref="counted"
+                :currentLocale="currentLocale"
+                :value="value[currentLocale] || ''"
+                :max-chars="field.maxChars"
+                :warning-threshold="field.warningAt"
                 v-if="field.counted"></charcounter>
-
-            <p v-if="hasError" class="my-2 text-danger">
-                {{ firstError }}
-            </p>
         </template>
     </default-field>
 </template>
@@ -39,15 +36,15 @@
 <script>
 import Charcounter from '../Charcounter/Charcounter';
 
-import { FormField, HandlesValidationErrors, Errors } from 'laravel-nova';
-import { EventBus } from '../../event-bus';
+import {Errors, FormField, HandlesValidationErrors} from 'laravel-nova';
+import {EventBus} from '../../event-bus';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
 
     props: ['resourceName', 'resourceId', 'field'],
 
-    components: { Charcounter },
+    components: {Charcounter},
 
     data() {
         return {
@@ -70,7 +67,7 @@ export default {
         })
 
         EventBus.$on('localeChanged', locale => {
-            if(this.currentLocale !== locale) {
+            if (this.currentLocale !== locale) {
                 this.changeTab(locale, true);
             }
         });
@@ -129,28 +126,38 @@ export default {
             }
         },
 
+        escapeSpecialChars(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\\\$&');
+        },
+
         /*
          * Generate the slug
          */
         generateSlug(value) {
             this.validationErrors = new Errors()
-            
             const options = {
+                resource: this.resourceName,
                 model: this.field.model || null,
                 options: this.field.options || null,
                 attribute: this.field.attribute || null,
                 updating: this.updating,
                 initialValue: this.initialValue,
-                value,
+                separator: this.escapeSpecialChars(this.field.options.separator || '-'),
+                value: value,
             }
 
-            this.value[this.currentLocale] = value.toString().toLowerCase()
-                .replace(/\s+/g, '-')           // Replace spaces with -
-                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-                .replace(/^-+/, '');            // Trim - from start of text
+            Nova.request().post('/nova-vendor/rslanzi/nova-translatable/slug/generate', options)
+                        .then(response => {
+                            this.value[this.currentLocale] = response.data;
+                        });
+
+            // this.value[this.currentLocale] = value.toString().toLowerCase()
+            //     .replace(new RegExp('\\s+', 'g'), this.field.options.separator) // Replace spaces with -
+            //     .replace(new RegExp('[^\\w' + this.field.options.separator + ']+', 'g'), '') // Remove all non-word chars
+            //     .replace(new RegExp('[' + this.field.options.separator +']{2,}', 'g'), this.field.options.separator) // Replace multiple - with single -
+            //     .replace(new RegExp('^[' + this.field.options.separator + ']+'), ''); // Trim separator from start of text
         },
-        
+
     },
 
     computed: {
