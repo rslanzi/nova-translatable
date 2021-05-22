@@ -14,7 +14,7 @@ class CreateTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('test_translations', function(Blueprint $table) {
+        Schema::create('test_translations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('test_id')->constrained();
             $table->string('locale')->index();

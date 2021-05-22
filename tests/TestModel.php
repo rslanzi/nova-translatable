@@ -15,5 +15,4 @@ class TestModel extends Model implements TranslatableContract
     protected $fillable = ['name'];
 
     public $translatedAttributes = ['title'];
-
 }
