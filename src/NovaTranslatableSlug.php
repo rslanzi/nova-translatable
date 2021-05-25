@@ -107,7 +107,7 @@ class NovaTranslatableSlug extends Text
      *
      * @return $this
      */
-    public function unique(\Illuminate\Database\Eloquent\Model $model): self
+    public function unique(string $model): self
     {
         $this->model($model);
 

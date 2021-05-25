@@ -18,13 +18,13 @@ class SlugControllerTest extends TestCase
             'name' => 'name',
         ]);
 
-        TestTranslationModel::create([
+        TestModelTranslation::create([
                 'test_id' => $this->testModel->id,
                 'locale' => 'it',
                 'title' => 'titolo',
                 'slug' => 'titolo',
         ]);
-        TestTranslationModel::create([
+        TestModelTranslation::create([
             'test_id' => $this->testModel->id,
             'locale' => 'en',
             'title' => 'title',
@@ -51,7 +51,7 @@ class SlugControllerTest extends TestCase
         $data = [
             'value' => 'test title',
             'options' => [
-                'slugSeparator' => '_',
+                'separator' => '_',
             ],
         ];
 

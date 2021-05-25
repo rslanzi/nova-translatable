@@ -46,7 +46,6 @@ class SlugController
         if (! $request->filled('value')) {
             return $this->sendResponse();
         }
-
         if ($request->filled('model')) {
             $this->getModelOptions($request->input('model'));
         }

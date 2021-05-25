@@ -4,7 +4,7 @@ namespace Rslanzi\NovaTranslatable\Tests;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TestTranslationModel extends Model
+class TestModelTranslation extends Model
 {
     protected $table = "test_translations";
 

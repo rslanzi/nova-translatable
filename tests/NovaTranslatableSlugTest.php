@@ -53,31 +53,14 @@ class NovaTranslatableSlugTest extends TestCase
     /** @test */
     public function it_works_with_unique_option()
     {
+        $model = (new TestModel);
         $translatable = NovaTranslatableSlug::make('field')
-            ->unique();
+            ->unique($model);
 
         $expected = [
             'locales' => ['it', 'en'],
             'indexLocale' => 'it',
-            'options' => [
-                'generateUniqueSlugs' => true,
-            ],
-        ];
-
-        $this->assertEquals($expected, $translatable->meta);
-    }
-
-    /** @test */
-    public function it_works_with_unique_and_model_options()
-    {
-        $translatable = NovaTranslatableSlug::make('field')
-            ->unique()
-            ->model('field');
-
-        $expected = [
-            'locales' => ['it', 'en'],
-            'indexLocale' => 'it',
-            'model' => 'field',
+            'model' => $model,
             'options' => [
                 'generateUniqueSlugs' => true,
             ],
