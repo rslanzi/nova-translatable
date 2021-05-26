@@ -4,6 +4,7 @@ namespace Rslanzi\NovaTranslatable\Tests;
 
 use Laravel\Nova\Resource;
 use Rslanzi\NovaTranslatable\Tests\TestModel as Test;
+use Rslanzi\NovaTranslatable\Tests\TestModelTranslation as TestTranslation;
 
 class SlugControllerTest extends TestCase
 {
@@ -14,22 +15,7 @@ class SlugControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->testModel = Test::create([
-            'name' => 'name',
-        ]);
-
-        TestModelTranslation::create([
-                'test_id' => $this->testModel->id,
-                'locale' => 'it',
-                'title' => 'titolo',
-                'slug' => 'titolo',
-        ]);
-        TestModelTranslation::create([
-            'test_id' => $this->testModel->id,
-            'locale' => 'en',
-            'title' => 'title',
-            'slug' => 'title',
-        ]);
+        $this->createDummyData();
     }
 
     /** @test */
@@ -81,18 +67,46 @@ class SlugControllerTest extends TestCase
     public function it_return_a_correct_slug_response_with_unique_slug()
     {
         $this->withoutExceptionHandling();
+
         $data = [
-            'value' => 'title',
             'model' => '\Rslanzi\NovaTranslatable\Tests\TestModel',
             'options' => [
                 'generateUniqueSlugs' => true,
             ],
+            'attribute' => 'slug',
+            'value' => 'title',
         ];
 
         $this
             ->postJson('nova-vendor/rslanzi/nova-translatable/slug/generate', $data)
             ->assertSuccessful()
             ->assertJson(['slug' => 'title']);
+    }
+
+    protected function createDummyData(): void
+    {
+        $this->testModel = Test::create(
+            [
+                'name' => 'name',
+            ]
+        );
+
+        TestTranslation::create(
+            [
+                'test_id' => $this->testModel->id,
+                'locale' => 'it',
+                'title' => 'titolo',
+                'slug' => 'titolo',
+            ]
+        );
+        TestTranslation::create(
+            [
+                'test_id' => $this->testModel->id,
+                'locale' => 'en',
+                'title' => 'title',
+                'slug' => 'title',
+            ]
+        );
     }
 }
 
