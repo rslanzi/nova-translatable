@@ -182,7 +182,7 @@ class SlugController
             ->when($this->updating, function ($query) use ($modelAttribute, $initialValue) {
                 return $query->where($modelAttribute, '!=', $initialValue);
             })
-//            ->withoutGlobalScopes()
+            ->withoutGlobalScopes()
             ->first();
     }
 
